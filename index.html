@@ -1,0 +1,254 @@
+<html class="hydrated"><head>
+   
+    <title>Compact QR Code Generator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #27ae60;
+            --secondary-color: #27ae60;
+            --background-color: #f5f7fa;
+            --text-color: #34495e;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+        #qrcode img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        label {
+            display: inline-block;
+            margin-bottom: 0.25rem;
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .color-picker {
+            display: flex;
+            align-items: center;
+        }
+        .color-picker input[type="color"] {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 5px;
+            border: 1px solid #ddd;
+        }
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #27ae60;
+        }
+        #downloadPngBtn {
+            background-color: var(--secondary-color);
+        }
+        #downloadPngBtn:hover {
+            background-color: #27ae60;
+        }
+        #printBtn {
+            background-color: #27ae60;
+        }
+        #printBtn:hover {
+            background-color: #27ae60;
+        }
+        #generateQRBtn, #downloadSourceBtn {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        #generateQRBtn:hover, #downloadSourceBtn:hover {
+            background-color: #27ae60;
+        }
+       
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #qrcode, #qrcode *, #qrText {
+                visibility: visible;
+            }
+            #qrcode {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+            #qrText {
+                position: absolute;
+                left: 50%;
+                top: 100%;
+                transform: translateX(-50%);
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+<script src="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-email-notifier/sqrx-email-notifier.esm.js" type="module" data-resources-url="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-email-notifier/" data-stencil-namespace="sqrx-email-notifier" id="sqrx-email-notifier"></script><script src="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-dialog/sqrx-dialog.esm.js" type="module" data-resources-url="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-dialog/" data-stencil-namespace="sqrx-dialog" id="sqrx-dialog"></script><script src="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-notification-bar/sqrx-notification-bar.esm.js" type="module" data-resources-url="chrome-extension://kapjaoifikajdcdehfdlmojlepfpkpoe/sqrx-notification-bar/" data-stencil-namespace="sqrx-notification-bar" id="sqrx-notification-bar"></script></head>
+<body data-new-gr-c-s-check-loaded="14.1195.0" data-gr-ext-installed="">
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        <div id="qrcode"></div>
+        <div class="form-group">
+            <label for="qrText">Content:</label>
+            <input type="text" id="qrText" value="https://034-bikashkumaryadav.github.io/Personal-Portfolio-Portal/">
+        </div>
+        <div class="form-group">
+            <label for="qrSize">Size: <span id="sizeValue">200x200</span></label>
+            <input type="range" id="qrSize" value="200" min="100" max="300" step="10">
+        </div>
+        <div class="form-group">
+            <label for="qrColor">Color:</label>
+            <div class="color-picker">
+                <input type="color" id="qrColor" value="#000000">
+                <div class="color-preview" id="colorPreview"></div>
+            </div>
+        </div>
+        <button id="generateQRBtn">Generate QR Code</button>
+        <div class="button-group">
+            <button id="downloadSvgBtn">SVG</button>
+            <button id="downloadPngBtn">PNG</button>
+            <button id="printBtn">Print</button>
+        </div>
+        
+    </div>
+    
+    <script>
+        let qrcode = null;
+
+        function generateQRCode() {
+            const text = document.getElementById('qrText').value;
+            const size = parseInt(document.getElementById('qrSize').value);
+            const color = document.getElementById('qrColor').value;
+
+            const qrcodeElement = document.getElementById('qrcode');
+            qrcodeElement.innerHTML = '';
+
+            qrcode = new QRCode(qrcodeElement, {
+                text: text,
+                width: size,
+                height: size,
+                colorDark: color,
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        document.getElementById('qrSize').addEventListener('input', (e) => {
+            document.getElementById('sizeValue').textContent = `${e.target.value}x${e.target.value}`;
+        });
+
+        document.getElementById('qrColor').addEventListener('input', (e) => {
+            document.getElementById('colorPreview').style.backgroundColor = e.target.value;
+        });
+
+        document.getElementById('generateQRBtn').addEventListener('click', generateQRCode);
+
+        document.getElementById('downloadSvgBtn').addEventListener('click', () => {
+            const svgElement = document.querySelector('#qrcode svg');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'qrcode.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        });
+
+        document.getElementById('downloadPngBtn').addEventListener('click', () => {
+            html2canvas(document.getElementById('qrcode')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+
+        document.getElementById('printBtn').addEventListener('click', () => {
+            window.print();
+        });
+
+       
+    </script>
+
+<div id="sqrx-content-container"><div class="squarex_ext_modal"><div class="squarex_ext_dialog-container"></div></div></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
