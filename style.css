@@ -1,4 +1,4 @@
-<style>
+
 :root {
     --primary-color: #27ae60;
     --secondary-color: #27ae60;
@@ -151,4 +151,3 @@ input:focus, select:focus {
         margin-top: 1rem;
     }
 }
-</style>

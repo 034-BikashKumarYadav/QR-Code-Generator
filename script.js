@@ -1,5 +1,5 @@
  
-    <script>
+
     let qrcode = null;
 
     function generateQRCode() {
@@ -59,4 +59,3 @@
     });
 
    
-</script>
